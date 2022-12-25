@@ -1,10 +1,14 @@
 package tdd;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 import model.Ace;
 import model.Card;
 import model.Figure;
 import model.NumericCard;
+import model.Player;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -107,43 +111,87 @@ public class BlackJackTest {
     
     @Test
     public void case1() {
+        System.out.println("Case 1");
+        List<Player> players = new ArrayList<>();
+        List<Card> deck = new ArrayList<>();
+        List<String> aux = Arrays.asList("5", "4", "K", "2");
+        deck = BlackJack.stringToCard(aux);
+        
+        List<String> croupier_ = Arrays.asList("9", "7");
+        List<String> player1_ = Arrays.asList("J", "A");
+        List<String> player2_ = Arrays.asList("10", "5", "6");
+        List<String> player3_ = Arrays.asList("3", "6", "A", "3", "A", "K");
+    
+        Player croupier = new Player(0, BlackJack.stringToCard(croupier_));
+        Player player1 = new Player(1, BlackJack.stringToCard(player1_));
+        Player player2 = new Player(2, BlackJack.stringToCard(player2_));
+        Player player3 = new Player(3, BlackJack.stringToCard(player3_));
+        
+        players.add(croupier);
+        players.add(player1);
+        players.add(player2);
+        players.add(player3);
+        
+        BlackJack blackjack = new BlackJack(players, deck);
+        List<Player> winnerPlayers = blackjack.getWinners(players, deck);
+        
+        System.out.println(winnerPlayers);
     }
+    
     
     @Test
     public void case2() {
+        System.out.println("Case 2");
+        List<Player> players = new ArrayList<>();
+        List<Card> deck = new ArrayList<>();
+        List<String> aux = Arrays.asList("A", "3", "K", "2");
+        deck = BlackJack.stringToCard(aux);
+        
+        List<String> croupier_ = Arrays.asList("5", "10");
+        List<String> player1_ = Arrays.asList("10", "K");
+        List<String> player2_ = Arrays.asList("10", "2", "6");
+        List<String> player3_ = Arrays.asList("8", "8", "5");
+    
+        Player croupier = new Player(0, BlackJack.stringToCard(croupier_));
+        Player player1 = new Player(1, BlackJack.stringToCard(player1_));
+        Player player2 = new Player(2, BlackJack.stringToCard(player2_));
+        Player player3 = new Player(3, BlackJack.stringToCard(player3_));
+        
+        players.add(croupier);
+        players.add(player1);
+        players.add(player2);
+        players.add(player3);
+        
+        BlackJack blackjack = new BlackJack(players, deck);
+        List<Player> winnerPlayers = blackjack.getWinners(players, deck);
+        
+        System.out.println(winnerPlayers);
     }
     
     private Hand createHand(Card... cards) {
         return new Hand() {
             @Override
             public int value() {
-                int sum = 0;
-                for (Card card : cards){
-                    sum += card.getValue();
-                    if(sum > 21 && card.getValue() == 11) {
-                        sum -= card.getValue();
-                        sum++;
-                    }
-                }
-                return sum;
-            }
+                int sum = 0, aces = 0;
 
-            private int sum() {
-                return Stream.of(cards).mapToInt(c->c.getValue()).sum();
-            }
-            
-            private boolean canUseAceExtendedValue() {
-                return sum() <= 11 && containsAce();
-            }
-            
-            private boolean containsAce() {
-                Ace Ace = new Ace();
-                return Stream.of(cards).anyMatch(c->c==Ace);
+                for (Card card : cards) { 
+                    sum += card.getValue(); 
+                    if(card instanceof Ace){aces++;}
+                }
+                if(aces != 0) while(sum>21){ sum -= 10; }
+                return sum;
             }
             
             @Override
             public boolean isBlackJack() {
-                return value() == 21 && cards.length == 2;
+                return containsCardWithValue(11) && containsCardWithValue(10);
+            }
+            
+            private boolean containsCardWithValue(int expectedValue) {
+                for (Card card : cards)
+                    if (card.getValue() == expectedValue) return true;
+                return false;
+                
             }
 
             @Override

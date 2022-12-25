@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Ace;
 import model.Card;
+import model.Figure;
+import model.NumericCard;
 import model.Player;
 
 public class BlackJack {
     
     private final List<Player> players;
     private final List<Card> deck;
-    private final Player croupier;
     
     public BlackJack(List<Player> players, List<Card> deck) {
         this.players = players;
         this.deck = deck;
-        this.croupier = new Player(0, croupierCards()); 
     }
-    
+       
     public List<Player> getPlayers() {
         return players;
     }
@@ -46,36 +46,82 @@ public class BlackJack {
         }
         return totalPoints;
     }
-
-    private List<Card> croupierCards() {
-        List<Card> croupierCards = new ArrayList<>();
-        while (getPoints(croupierCards) < 17 && deck.size() > 0){
-            croupierCards.add(deck.get(0));
-            deck.remove(0);
-        }
-        return croupierCards;
-    }
     
-    public List<Player> getWinners(List<Player> players){
+    public List<Player> getWinners(List<Player> players, List<Card> desk){
         List<Player> winnerPlayers = new ArrayList<>();
         
-        if (isBlackJack(croupier.getBetcards())){
-            winnerPlayers.add(croupier);
+        croupierCards(players.get(0), desk);
+        if (isBlackJack(players.get(0).getBetcards())){
+            winnerPlayers.add(players.get(0));
             return winnerPlayers;
         }
-        players.forEach((player) -> {
+        for (Player player : players) {
             int playerPoints = getPoints(player.getBetcards());
             if (!(playerPoints > 21)) {
-                int croupierPoints = getPoints(croupier.getBetcards());
-                if (croupierPoints > 21 || playerPoints > croupierPoints) {
+                int croupierPoints = getPoints(players.get(0).getBetcards());
+                List<Card> cards = player.getBetcards();
+
+                if ( (cards.get(0).getValue() == 10 && cards.get(1).getValue() == 11) || (cards.get(0).getValue() == 11 && cards.get(1).getValue() == 10)){
+                    winnerPlayers.add(player);
+                    break;
+                }else if (croupierPoints > 21 || playerPoints > croupierPoints) {
                     winnerPlayers.add(player);
                 }
             }
-        });
+        }
         
-        if(winnerPlayers.isEmpty() && getPoints(croupier.getBetcards()) <= 21){
-            winnerPlayers.add(croupier);
+        if(winnerPlayers.isEmpty() && getPoints(players.get(0).getBetcards()) <= 21){
+            winnerPlayers.add(players.get(0));
         }
         return winnerPlayers;
+    }
+    
+    public void croupierCards(Player croupier, List<Card> desk){
+        int value = croupier.getValueCards();
+        for(int i = 0; value < 17; i++){
+            Card card= desk.get(i);
+            croupier.addCard(card);
+            value = croupier.getValueCards();
+        }
+    }
+    
+    public int getValueCards(List<Card> desk){
+        int value = 0;
+        value = desk.stream().map((card) -> card.getValue()).reduce(value, Integer::sum);
+        return value;
+    }
+    
+    public static List<Card> stringToCard(List<String> cards_string){
+        List<Card> cards = new ArrayList<>();
+        cards_string.forEach((String card) -> {
+            if (null == card) {
+                System.out.println("ERROR: UNA CARTA INTRODUCIDA NO ES CORRECTA");
+                System.exit(1);
+            } else switch (card) {
+                case "A":
+                    cards.add(new Ace());
+                    break;
+                case "J":
+                case "Q":
+                case "K":
+                    cards.add(new Figure());
+                    break;
+                case "2":
+                case "3":
+                case "4":
+                case "5":
+                case "6":
+                case "7":
+                case "8":
+                case "9":
+                case "10":
+                    cards.add(new NumericCard(Integer.valueOf(card)));
+                    break;
+                default:
+                    System.out.println("ERROR: UNA CARTA INTRODUCIDA NO ES CORRECTA");
+                    System.exit(1);
+            }
+        });
+        return cards;
     }
 }
