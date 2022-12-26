@@ -3,11 +3,10 @@ package tdd;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
-import model.Ace;
-import model.Card;
-import model.Figure;
-import model.NumericCard;
+import model.card.Ace;
+import model.card.Card;
+import model.card.Figure;
+import model.card.NumericCard;
 import model.Player;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -206,8 +205,4 @@ public class BlackJackTest {
         public boolean isBlackJack();
         boolean isBust();
     }
-    
-
-    
-
 }

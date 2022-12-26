@@ -1,5 +1,7 @@
 package model;
 
+import model.card.Ace;
+import model.card.Card;
 import java.util.ArrayList;
 import java.util.List;
 

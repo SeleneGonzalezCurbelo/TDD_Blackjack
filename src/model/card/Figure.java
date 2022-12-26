@@ -1,4 +1,4 @@
-package model;
+package model.card;
 
 public class Figure implements Card{
     private final int value = 10;

@@ -1,4 +1,4 @@
-package model;
+package model.card;
 
 public class Ace implements Card{
     private final int value = 11;
