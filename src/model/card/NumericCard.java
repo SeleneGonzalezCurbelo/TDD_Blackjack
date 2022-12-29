@@ -11,4 +11,9 @@ public class NumericCard implements Card{
     public int getValue() {
         return value;
     }
+    
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
 }

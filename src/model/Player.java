@@ -2,16 +2,19 @@ package model;
 
 import model.card.Ace;
 import model.card.Card;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
     private final int id;
-    private List<Card> betcards = new ArrayList<>();
+    private String name;
+    private List<Card> betCards = new ArrayList<>();
 
-    public Player(int id, List<Card> betcards) {
+    public Player(int id, String name, List<Card> betCards) {
         this.id = id;
-        this.betcards = betcards;
+        this.name = name;
+        this.betCards = betCards;
     }
     
     public int getId() {
@@ -19,12 +22,16 @@ public class Player {
     }
 
     public List<Card> getBetcards() {
-        return betcards;
+        return betCards;
+    }
+    
+    public void setBetCards(List<Card> betCards) {
+        this.betCards = betCards;
     }
     
     public int getValueCards() {
         int value = 0, aces = 0;
-        for (Card card : betcards) { 
+        for (Card card : betCards) { 
             value += card.getValue(); 
             if(card instanceof Ace){aces++;}
         }
@@ -33,14 +40,11 @@ public class Player {
     }
     
     public void addCard(Card card){
-        betcards.add(card);
+        betCards.add(card);
     }
 
     @Override
-    public String toString(){
-        if (id == 0){
-            return "Croupier";
-        }
-        return "Player" + id;
+    public String toString() {
+        return this.name;
     }
 }

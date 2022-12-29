@@ -2,10 +2,10 @@ package tdd;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import control.CardFactory;
 import model.card.Ace;
 import model.card.Card;
-import model.card.Figure;
-import model.card.NumericCard;
 import model.Player;
 
 public class BlackJack {
@@ -32,17 +32,19 @@ public class BlackJack {
 
     public static int getPoints(List<Card> betcards) {
         int totalPoints = 0;
-        int numberAces = 0;
+        List<Ace> aces = new ArrayList<>();
+
         for (Card card : betcards){
                if(card instanceof Ace){
-                   numberAces++;
+                   aces.add((Ace) card);
                }
                totalPoints += card.getValue();
         }
         
-        while(totalPoints > 21 && numberAces >= 1){
-            totalPoints -= 10;
-            numberAces--;
+        for (Ace ace : aces) {
+            if (totalPoints > 21) {
+                totalPoints -= 10;
+            }
         }
         return totalPoints;
     }
@@ -55,22 +57,26 @@ public class BlackJack {
             winnerPlayers.add(players.get(0));
             return winnerPlayers;
         }
+        
         for (Player player : players) {
-            int playerPoints = getPoints(player.getBetcards());
-            if (!(playerPoints > 21)) {
-                int croupierPoints = getPoints(players.get(0).getBetcards());
-                List<Card> cards = player.getBetcards();
-
-                if ( (cards.get(0).getValue() == 10 && cards.get(1).getValue() == 11) || (cards.get(0).getValue() == 11 && cards.get(1).getValue() == 10)){
-                    winnerPlayers.add(player);
-                    break;
-                }else if (croupierPoints > 21 || playerPoints > croupierPoints) {
-                    winnerPlayers.add(player);
-                }
+            if (isBlackJack(player.getBetcards())){
+                winnerPlayers.add(player);
+                break;
             }
         }
         
-        if(winnerPlayers.isEmpty() && getPoints(players.get(0).getBetcards()) <= 21){
+        if (winnerPlayers.isEmpty()){
+            for (Player player : players) {
+                int playerPoints = getPoints(player.getBetcards());
+                if (!(playerPoints > 21)) {
+                    int croupierPoints = getPoints(players.get(0).getBetcards());
+                    if (croupierPoints > 21 || playerPoints > croupierPoints) {
+                        winnerPlayers.add(player);
+                    }
+                }
+            }
+        }
+        if (winnerPlayers.isEmpty() && getPoints(players.get(0).getBetcards()) <= 21){
             winnerPlayers.add(players.get(0));
         }
         return winnerPlayers;
@@ -93,35 +99,9 @@ public class BlackJack {
     
     public static List<Card> stringToCard(List<String> cards_string){
         List<Card> cards = new ArrayList<>();
-        cards_string.forEach((String card) -> {
-            if (null == card) {
-                System.out.println("ERROR: UNA CARTA INTRODUCIDA NO ES CORRECTA");
-                System.exit(1);
-            } else switch (card) {
-                case "A":
-                    cards.add(new Ace());
-                    break;
-                case "J":
-                case "Q":
-                case "K":
-                    cards.add(new Figure());
-                    break;
-                case "2":
-                case "3":
-                case "4":
-                case "5":
-                case "6":
-                case "7":
-                case "8":
-                case "9":
-                case "10":
-                    cards.add(new NumericCard(Integer.valueOf(card)));
-                    break;
-                default:
-                    System.out.println("ERROR: UNA CARTA INTRODUCIDA NO ES CORRECTA");
-                    System.exit(1);
-            }
-        });
+        for (String card : cards_string) {
+            cards.add(CardFactory.cards.get(card));
+        }
         return cards;
     }
 }

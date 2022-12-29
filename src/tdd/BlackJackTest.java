@@ -3,11 +3,13 @@ package tdd;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import model.card.Ace;
 import model.card.Card;
 import model.card.Figure;
 import model.card.NumericCard;
 import model.Player;
+
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -121,10 +123,10 @@ public class BlackJackTest {
         List<String> player2_ = Arrays.asList("10", "5", "6");
         List<String> player3_ = Arrays.asList("3", "6", "A", "3", "A", "K");
     
-        Player croupier = new Player(0, BlackJack.stringToCard(croupier_));
-        Player player1 = new Player(1, BlackJack.stringToCard(player1_));
-        Player player2 = new Player(2, BlackJack.stringToCard(player2_));
-        Player player3 = new Player(3, BlackJack.stringToCard(player3_));
+        Player croupier = new Player(0, "Croupier", BlackJack.stringToCard(croupier_));
+        Player player1 = new Player(1, "Player1", BlackJack.stringToCard(player1_));
+        Player player2 = new Player(2, "Player2", BlackJack.stringToCard(player2_));
+        Player player3 = new Player(3, "Player3", BlackJack.stringToCard(player3_));
         
         players.add(croupier);
         players.add(player1);
@@ -151,10 +153,10 @@ public class BlackJackTest {
         List<String> player2_ = Arrays.asList("10", "2", "6");
         List<String> player3_ = Arrays.asList("8", "8", "5");
     
-        Player croupier = new Player(0, BlackJack.stringToCard(croupier_));
-        Player player1 = new Player(1, BlackJack.stringToCard(player1_));
-        Player player2 = new Player(2, BlackJack.stringToCard(player2_));
-        Player player3 = new Player(3, BlackJack.stringToCard(player3_));
+        Player croupier = new Player(0, "Croupier", BlackJack.stringToCard(croupier_));
+        Player player1 = new Player(1, "Player1", BlackJack.stringToCard(player1_));
+        Player player2 = new Player(2, "Player2", BlackJack.stringToCard(player2_));
+        Player player3 = new Player(3, "Player3", BlackJack.stringToCard(player3_));
         
         players.add(croupier);
         players.add(player1);
